@@ -1,0 +1,67 @@
+/**
+ * Stitch "Functional Clarity" — full palette from login screen HTML
+ */
+:root {
+  --stitch-primary: #3525cd;
+  --stitch-primary-container: #4f46e5;
+  --stitch-on-primary: #ffffff;
+  --stitch-secondary: #00677c;
+  --stitch-background: #f7f9fb;
+  --stitch-surface: #f7f9fb;
+  --stitch-surface-container-lowest: #ffffff;
+  --stitch-surface-container-low: #f2f4f6;
+  --stitch-on-background: #191c1e;
+  --stitch-on-surface: #191c1e;
+  --stitch-on-surface-variant: #464555;
+  --stitch-outline: #777587;
+  --stitch-outline-variant: #c7c4d8;
+  --stitch-font: Geist, system-ui, -apple-system, sans-serif;
+  --stitch-margin-mobile: 20px;
+}
+
+@keyframes stitch-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stitch-fade-up {
+  animation: stitch-fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+.stitch-input:focus {
+  outline: none;
+  border-color: var(--stitch-primary);
+  box-shadow: 0 0 0 4px rgba(53, 37, 205, 0.1);
+}
+
+.stitch-glass-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.stitch-ambient-shadow {
+  box-shadow: 0 10px 30px -5px rgba(53, 37, 205, 0.15);
+}
+
+@keyframes stitch-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stitch-fade-in {
+  animation: stitch-fade-in 0.5s ease-out forwards;
+}

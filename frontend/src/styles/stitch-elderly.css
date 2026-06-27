@@ -1,0 +1,100 @@
+/**
+ * Elderly-friendly overrides — layered on top of stitch-tokens.css
+ * Larger text, bigger touch targets, higher contrast, more spacing.
+ * Imported in MocaPatientLayout so it only affects patient-facing screens.
+ */
+.elderly-layout {
+  /* ------ Base typography ------ */
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.elderly-layout p,
+.elderly-layout label,
+.elderly-layout span,
+.elderly-layout div:not([class*="text-xs"]):not([class*="text-[10px]"]):not([class*="text-[") {
+  font-size: 16px;
+}
+
+.elderly-layout h2 {
+  font-size: 24px;
+  line-height: 1.3;
+}
+
+.elderly-layout h3 {
+  font-size: 20px;
+  line-height: 1.3;
+}
+
+/* ------ Touch targets (min 48px) ------ */
+.elderly-layout button,
+.elderly-layout a,
+.elderly-layout input,
+.elderly-layout select,
+.elderly-layout textarea {
+  min-height: 48px;
+}
+
+.elderly-layout input,
+.elderly-layout select,
+.elderly-layout textarea {
+  font-size: 18px !important;
+  padding: 14px 16px !important;
+  border-radius: 14px;
+}
+
+.elderly-layout button:not([class*="text-xs"]):not([class*="py-1"]):not([class*="px-2"]) {
+  padding: 14px 20px;
+  font-size: 18px;
+  border-radius: 14px;
+}
+
+/* ------ Higher contrast ------ */
+.elderly-layout .text-on-surface-variant,
+.elderly-layout .text-outline,
+.elderly-layout [class*="text-slate-500"],
+.elderly-layout [class*="text-slate-600"] {
+  color: #1e293b !important; /* slate-800 — much darker */
+}
+
+.elderly-layout .border-outline-variant {
+  border-color: #94a3b8 !important; /* slate-400 — more visible */
+}
+
+/* ------ More spacing ------ */
+.elderly-layout .space-y-1 { margin-top: 0.75rem !important; }
+.elderly-layout .space-y-2 { margin-top: 1rem !important; }
+.elderly-layout .space-y-3 { margin-top: 1.25rem !important; }
+
+.elderly-layout .gap-1 { gap: 0.5rem !important; }
+.elderly-layout .gap-2 { gap: 0.75rem !important; }
+.elderly-layout .gap-3 { gap: 1rem !important; }
+
+/* ------ Cards become more distinct ------ */
+.elderly-layout [class*="rounded-xl"] {
+  border-radius: 16px;
+}
+
+.elderly-layout [class*="border"]:not([class*="border-0"]):not([class*="border-t"]) {
+  border-width: 2px;
+}
+
+/* ------ Bigger avatars ------ */
+.elderly-layout [class*="h-12"][class*="w-12"] {
+  width: 56px !important;
+  height: 56px !important;
+  font-size: 24px !important;
+}
+
+/* ------ Bottom nav stays compact but easier to tap ------ */
+.elderly-layout [class*="fixed"][class*="bottom-0"] button,
+.elderly-layout [class*="fixed"][class*="bottom-0"] a {
+  min-height: 56px;
+  padding: 8px 16px;
+}
+
+/* ------ Filter pills bigger ------ */
+.elderly-layout [class*="rounded-full"] {
+  padding: 10px 18px !important;
+  font-size: 16px !important;
+}

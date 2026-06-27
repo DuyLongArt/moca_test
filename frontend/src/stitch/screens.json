@@ -1,0 +1,50 @@
+{
+  "projectId": "4688834990672746573",
+  "screens": {
+    "login": {
+      "screenId": "17dae0a107e14a80974120ca200a3251",
+      "title": "Login - Assessment Pro",
+      "route": "/login"
+    },
+    "patientHome": {
+      "screenId": "2df2ac7fb0764e1ca056c2e359ab3d0c",
+      "title": "Assessment Form - Multiple Test Types",
+      "route": "/patient"
+    },
+    "mocaNamingDrawing": {
+      "screenId": "f3d0f2acbd2348268d4c7e99b91f3778",
+      "title": "MoCA - Naming & Drawing Task",
+      "route": "/patient/test"
+    },
+    "mocaClock": {
+      "screenId": "fe7e080e4f1e4eb9bfbdd2281437bfff",
+      "title": "MoCA - Clock Drawing Task",
+      "route": "/patient/test"
+    },
+    "mocaMemory": {
+      "screenId": "086a63a53ab64f4b931218c181fa5232",
+      "title": "MoCA - Memory Task",
+      "route": "/patient/test"
+    },
+    "results": {
+      "screenId": "447040560e3940b69c247b08ccc1d45d",
+      "title": "MoCA - Results Summary",
+      "route": "/patient/results"
+    },
+    "emptyTests": {
+      "screenId": "53d614a546f24dde9824b6735d36a545",
+      "title": "Empty State - Tests",
+      "route": "/patient/results"
+    },
+    "error": {
+      "screenId": "2e6e4ce01f424f0c827055adaa2e4168",
+      "title": "Error State - Feedback",
+      "route": null
+    },
+    "success": {
+      "screenId": "41091e6dc79445458b760c4a39b945e5",
+      "title": "Success State - Submission",
+      "route": null
+    }
+  }
+}

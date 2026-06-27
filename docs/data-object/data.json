@@ -1,0 +1,315 @@
+{
+  "$schema": "moca-platform/data-object/v1",
+  "description": "Reference object graph for MoCA Platform — mirrors docs/entity-design.md and seed data in data.sql",
+  "ids": {
+    "admin": "11111111-1111-4111-8111-111111111001",
+    "doctorTranMinh": "11111111-1111-4111-8111-111111111201",
+    "doctorLeHuong": "11111111-1111-4111-8111-111111111202",
+    "patientNguyen": "11111111-1111-4111-8111-111111111101",
+    "sessionPending": "22222222-2222-4222-8222-222222222201",
+    "sessionFinalized": "22222222-2222-4222-8222-222222222202",
+    "mocaSet1": "MOCA_SET_1"
+  },
+  "aggregates": {
+    "who": ["users", "doctor_profiles", "patient_assignments", "appointments"],
+    "what": ["moca_sets"],
+    "attempt": ["test_sessions", "test_section_scores"]
+  },
+  "objectStorage": {
+    "provider": "minio",
+    "bucket": "moca-drawings",
+    "endpoint": "http://your-minio-host:9000",
+    "postgres": {
+      "host": "192.168.22.24",
+      "database": "moca-test-db",
+      "pgAdminUrl": "http://192.168.22.24/browser/"
+    },
+    "canvasKeys": [
+      "section_1a_trail_canvas",
+      "section_1b_cube_canvas",
+      "section_1c_clock_canvas"
+    ],
+    "audioKeysPlanned": [
+      "section_3_audio_v1",
+      "section_3_audio_v2",
+      "section_5",
+      "section_6_recording"
+    ],
+    "refShape": {
+      "storage": "minio",
+      "bucket": "moca-drawings",
+      "objectKey": "sessions/{sessionId}/{answerKey}.png",
+      "contentType": "image/png"
+    }
+  },
+  "users": [
+    {
+      "id": "11111111-1111-4111-8111-111111111001",
+      "email": "admin@moca.local",
+      "role": "ADMIN",
+      "fullName": "Quản trị viên"
+    },
+    {
+      "id": "11111111-1111-4111-8111-111111111201",
+      "email": "doctor.tran@moca.local",
+      "role": "DOCTOR",
+      "fullName": "BS. Trần Minh",
+      "doctorProfile": {
+        "specialty": "Thần kinh",
+        "licenseNumber": "BS-2015-001",
+        "isActive": true
+      }
+    },
+    {
+      "id": "11111111-1111-4111-8111-111111111202",
+      "email": "doctor.le@moca.local",
+      "role": "DOCTOR",
+      "fullName": "BS. Lê Hương",
+      "doctorProfile": {
+        "specialty": "Lão khoa",
+        "licenseNumber": "BS-2018-042",
+        "isActive": true
+      }
+    },
+    {
+      "id": "11111111-1111-4111-8111-111111111101",
+      "email": "patient.nguyen@moca.local",
+      "role": "PATIENT",
+      "fullName": "Nguyễn Văn Bệnh",
+      "educationYears": 12,
+      "gender": "Nam",
+      "dateOfBirth": "1955-08-15",
+      "currentDoctorId": "11111111-1111-4111-8111-111111111201"
+    }
+  ],
+  "moca_sets": [
+    {
+      "id": "MOCA_SET_1",
+      "label": "Đề MoCA 1",
+      "source": "vietnamesemoca_1.pdf",
+      "isActive": true,
+      "content": {
+        "naming": [
+          { "id": "n1", "emoji": "🦁", "answer": "Sư tử", "accept": ["su tu", "lion"] },
+          { "id": "n2", "emoji": "🦏", "answer": "Tê giác", "accept": ["te giac", "rhino", "rhinoceros"] },
+          { "id": "n3", "emoji": "🐫", "answer": "Lạc đà", "accept": ["lac da", "camel"] }
+        ],
+        "memory_words": [
+          { "word": "Vẻ mặt", "cue": "Đây là một bộ phận trên cơ thể" },
+          { "word": "Vải nhung", "cue": "Đây là một loại vải" },
+          { "word": "Nhà thờ", "cue": "Đây là một loại công trình kiến trúc" },
+          { "word": "Hoa cúc", "cue": "Đây là một loại hoa" },
+          { "word": "Màu đỏ", "cue": "Đây là một màu sắc" }
+        ],
+        "sentences": [
+          "Tôi chỉ biết rằng Nam là người cần được giúp đỡ hôm nay",
+          "Con mèo hay trốn dưới đi văng khi con chó ở trong phòng"
+        ],
+        "fluency": { "letter": "L", "threshold": 11 },
+        "abstraction": {
+          "example": { "pair": "Quả chuối – Quả cam", "answer": "Hoa quả (trái cây)" },
+          "pairs": [
+            { "pair": "Tàu – Xe đạp", "accept": ["phuong tien", "giao thong", "di chuyen", "di lai", "vehicle", "transport"] },
+            { "pair": "Đồng hồ – Thước kẻ", "accept": ["dung cu do", "do luong", "cong cu do", "measuring", "instrument"] }
+          ]
+        }
+      }
+    }
+  ],
+  "patient_assignments": [
+    {
+      "id": "33333333-3333-4333-8333-333333333301",
+      "patientId": "11111111-1111-4111-8111-111111111101",
+      "doctorId": "11111111-1111-4111-8111-111111111201",
+      "isCurrent": true,
+      "assignedAt": "2026-03-01T08:00:00Z"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "44444444-4444-4444-8444-444444444401",
+      "patientId": "11111111-1111-4111-8111-111111111101",
+      "doctorId": "11111111-1111-4111-8111-111111111201",
+      "doctorName": "BS. Trần Minh",
+      "scheduledAt": "2026-06-28T09:00:00Z",
+      "status": "SCHEDULED",
+      "notes": "Tái khám MoCA"
+    },
+    {
+      "id": "44444444-4444-4444-8444-444444444402",
+      "patientId": "11111111-1111-4111-8111-111111111101",
+      "doctorId": "11111111-1111-4111-8111-111111111201",
+      "doctorName": "BS. Trần Minh",
+      "scheduledAt": "2026-05-15T14:30:00Z",
+      "status": "COMPLETED"
+    }
+  ],
+  "test_sessions": [
+    {
+      "id": "22222222-2222-4222-8222-222222222201",
+      "patientId": "11111111-1111-4111-8111-111111111101",
+      "doctorId": "11111111-1111-4111-8111-111111111201",
+      "setId": "MOCA_SET_1",
+      "status": "PENDING_REVIEW",
+      "autoScore": 22,
+      "reviewScore": null,
+      "finalScore": null,
+      "educationBonus": 1,
+      "classification": "Chờ bác sĩ duyệt",
+      "submittedAt": "2026-06-24T09:30:00Z",
+      "rawAnswers": "@see rawAnswers.storedPending"
+    },
+    {
+      "id": "22222222-2222-4222-8222-222222222202",
+      "patientId": "11111111-1111-4111-8111-111111111101",
+      "doctorId": "11111111-1111-4111-8111-111111111201",
+      "setId": "MOCA_SET_1",
+      "status": "FINALIZED",
+      "autoScore": 24,
+      "reviewScore": 2,
+      "finalScore": 27,
+      "educationBonus": 1,
+      "classification": "Nhận thức bình thường",
+      "submittedAt": "2026-05-10T14:00:00Z",
+      "reviewedAt": "2026-05-11T10:00:00Z",
+      "reviewedBy": "11111111-1111-4111-8111-111111111201"
+    }
+  ],
+  "test_section_scores": {
+    "sectionMap": [
+      { "sectionKey": "section_1", "label": "Thị giác – không gian", "maxPoints": 5, "scoringMode": "REVIEW" },
+      { "sectionKey": "section_2", "label": "Gọi tên con vật", "maxPoints": 3, "scoringMode": "AUTO" },
+      { "sectionKey": "section_3", "label": "Trí nhớ (ghi nhận)", "maxPoints": 0, "scoringMode": "AUTO" },
+      { "sectionKey": "section_4", "label": "Sự chú ý", "maxPoints": 6, "scoringMode": "AUTO" },
+      { "sectionKey": "section_5", "label": "Nhắc lại câu", "maxPoints": 2, "scoringMode": "REVIEW" },
+      { "sectionKey": "section_6", "label": "Sự lưu loát", "maxPoints": 1, "scoringMode": "AUTO" },
+      { "sectionKey": "section_7", "label": "Tư duy trừu tượng", "maxPoints": 2, "scoringMode": "AUTO" },
+      { "sectionKey": "section_8", "label": "Nhớ lại có trì hoãn", "maxPoints": 5, "scoringMode": "AUTO" },
+      { "sectionKey": "section_9", "label": "Định hướng", "maxPoints": 6, "scoringMode": "AUTO" }
+    ],
+    "pendingSession": [
+      { "sectionKey": "section_1", "points": 0, "aiSuggestion": { "points": 3, "reason": "Trail đúng; cube đúng; đồng hồ thiếu kim phút" } },
+      { "sectionKey": "section_2", "points": 3 },
+      { "sectionKey": "section_3", "points": 0 },
+      { "sectionKey": "section_4", "points": 6 },
+      { "sectionKey": "section_5", "points": 0, "aiSuggestion": { "points": 1, "reason": "Câu 1 đủ; câu 2 thiếu chi tiết" } },
+      { "sectionKey": "section_6", "points": 1 },
+      { "sectionKey": "section_7", "points": 2 },
+      { "sectionKey": "section_8", "points": 3 },
+      { "sectionKey": "section_9", "points": 6 }
+    ]
+  },
+  "rawAnswers": {
+    "wireOnSubmit": {
+      "_comment": "Frontend POST body — base64/blob before offloadDrawings()",
+      "section_1a_trail_canvas": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
+      "section_1b_cube_canvas": "data:image/png;base64,...",
+      "section_1c_clock_canvas": "data:image/png;base64,...",
+      "section_2_naming": {
+        "n1": { "text": "Sư tử", "mode": "text" },
+        "n2": { "text": "Tê giác", "mode": "text" },
+        "n3": { "text": "Lạc đà", "mode": "text" }
+      },
+      "section_3_audio_v1": "blob:http://localhost/audio-v1",
+      "section_3_audio_v2": "blob:http://localhost/audio-v2",
+      "section_4a_forward": "21854",
+      "section_4a_backward": "247",
+      "section_4b": { "errors": 0, "omissions": 0, "falseAlarms": 0, "score": 1 },
+      "section_4c": ["93", "86", "79", "72", "65"],
+      "section_5": { "0": "blob:http://localhost/s5-0", "1": "blob:http://localhost/s5-1" },
+      "section_6": { "letter": "L", "count": 12, "score": 1 },
+      "section_6_text": "lá lửa lê lốc lưu ly lợn làng",
+      "section_6_recording": "blob:http://localhost/fluency",
+      "section_7": {
+        "0": { "pair": "Tàu – Xe đạp", "text": "phương tiện giao thông" },
+        "1": { "pair": "Đồng hồ – Thước kẻ", "text": "dụng cụ đo" }
+      },
+      "section_8_inputs": {
+        "word_1": { "text": "Vẻ mặt", "used_cue": false },
+        "word_2": { "text": "Vải nhung", "used_cue": false },
+        "word_3": { "text": "Nhà thờ", "used_cue": true },
+        "word_4": { "text": "Hoa cúc", "used_cue": false },
+        "word_5": { "text": "Đỏ", "used_cue": true }
+      },
+      "section_9": {
+        "date": "24",
+        "month": "6",
+        "year": "2026",
+        "day": "Thứ Ba",
+        "place": "Phòng khám",
+        "city": "Hà Nội"
+      }
+    },
+    "storedPending": {
+      "_comment": "After DrawingAnswerService.offloadDrawings() — saved in test_sessions.raw_answers",
+      "section_1a_trail_canvas": {
+        "storage": "minio",
+        "bucket": "moca-drawings",
+        "objectKey": "sessions/22222222-2222-4222-8222-222222222201/section_1a_trail_canvas.png",
+        "contentType": "image/png"
+      },
+      "section_1b_cube_canvas": {
+        "storage": "minio",
+        "bucket": "moca-drawings",
+        "objectKey": "sessions/22222222-2222-4222-8222-222222222201/section_1b_cube_canvas.png",
+        "contentType": "image/png"
+      },
+      "section_1c_clock_canvas": {
+        "storage": "minio",
+        "bucket": "moca-drawings",
+        "objectKey": "sessions/22222222-2222-4222-8222-222222222201/section_1c_clock_canvas.png",
+        "contentType": "image/png"
+      },
+      "section_2_naming": {
+        "n1": { "text": "Sư tử", "mode": "text" },
+        "n2": { "text": "Tê giác", "mode": "text" },
+        "n3": { "text": "Lạc đà", "mode": "text" }
+      },
+      "section_3_audio_v1": "blob:http://localhost/audio-v1",
+      "section_3_audio_v2": "blob:http://localhost/audio-v2",
+      "section_4a_forward": "21854",
+      "section_4a_backward": "247",
+      "section_4b": { "errors": 0, "omissions": 0, "falseAlarms": 0, "score": 1 },
+      "section_4c": ["93", "86", "79", "72", "65"],
+      "section_5": { "0": "blob:http://localhost/s5-0", "1": "blob:http://localhost/s5-1" },
+      "section_6": { "letter": "L", "count": 12, "score": 1 },
+      "section_6_text": "lá lửa lê lốc lưu ly lợn làng",
+      "section_7": {
+        "0": { "pair": "Tàu – Xe đạp", "text": "phương tiện giao thông" },
+        "1": { "pair": "Đồng hồ – Thước kẻ", "text": "dụng cụ đo" }
+      },
+      "section_8_inputs": {
+        "word_1": { "text": "Vẻ mặt", "used_cue": false },
+        "word_2": { "text": "Vải nhung", "used_cue": false },
+        "word_3": { "text": "Nhà thờ", "used_cue": true },
+        "word_4": { "text": "Hoa cúc", "used_cue": false },
+        "word_5": { "text": "Đỏ", "used_cue": true }
+      },
+      "section_9": {
+        "date": "24",
+        "month": "6",
+        "year": "2026",
+        "day": "Thứ Ba",
+        "place": "Phòng khám",
+        "city": "Hà Nội"
+      }
+    }
+  },
+  "apiExamples": {
+    "submitTestSession": {
+      "method": "POST",
+      "path": "/api/test-sessions",
+      "body": {
+        "patientId": "11111111-1111-4111-8111-111111111101",
+        "setId": "MOCA_SET_1",
+        "educationYears": 12,
+        "rawAnswers": "@see rawAnswers.wireOnSubmit"
+      }
+    },
+    "loadDrawing": {
+      "method": "GET",
+      "path": "/api/test-sessions/22222222-2222-4222-8222-222222222201/drawings/section_1a_trail_canvas",
+      "response": "image/png bytes from MinIO"
+    }
+  }
+}

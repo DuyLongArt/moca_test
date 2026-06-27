@@ -1,0 +1,71 @@
+@import "./styles/stitch-tokens.css";
+@import "tailwindcss";
+
+@theme {
+  --color-background: #f7f9fb;
+  --color-surface: #f7f9fb;
+  --color-primary: #3525cd;
+  --color-primary-container: #4f46e5;
+  --color-primary-fixed: #e2dfff;
+  --color-on-primary: #ffffff;
+  --color-on-primary-fixed-variant: #3323cc;
+  --color-on-background: #191c1e;
+  --color-on-surface: #191c1e;
+  --color-on-surface-variant: #464555;
+  --color-outline: #777587;
+  --color-outline-variant: #c7c4d8;
+  --color-surface-container: #eceef0;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f2f4f6;
+  --color-surface-container-high: #e6e8ea;
+  --color-surface-container-highest: #e0e3e5;
+  --color-secondary: #00677c;
+  --color-secondary-container: #65deff;
+  --color-on-secondary-container: #006074;
+  --color-error: #ba1a1a;
+  --spacing-margin-mobile: 20px;
+  --spacing-gutter: 16px;
+}
+
+html,
+body,
+#root {
+  height: 100dvh;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  font-family: var(--stitch-font);
+  background: var(--stitch-background);
+  color: var(--stitch-on-surface);
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Viewport shell: header/footer fixed height, main scrolls only when needed */
+.app-shell {
+  display: flex;
+  height: 100dvh;
+  max-height: 100dvh;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.app-shell__main {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.app-shell__main--center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

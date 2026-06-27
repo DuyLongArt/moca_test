@@ -1,0 +1,297 @@
+/* MoCA exam — calm, high-contrast, Apple-like (older adults) */
+.moca-exam {
+  --moca-bg: #f5f5f7;
+  --moca-surface: #ffffff;
+  --moca-text: #1d1d1f;
+  --moca-muted: #6e6e73;
+  --moca-accent: #0071e3;
+  --moca-accent-hover: #0077ed;
+  --moca-fill: #f5f5f7;
+  --moca-separator: rgba(0, 0, 0, 0.08);
+  --moca-radius: 20px;
+  --moca-radius-pill: 980px;
+  --moca-touch: 56px;
+
+  min-height: 100dvh;
+  height: 100dvh;
+  max-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--moca-bg);
+  color: var(--moca-text);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+  font-size: 1.125rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+}
+
+.moca-progress {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: rgba(245, 245, 247, 0.92);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--moca-separator);
+  padding: 1rem 1.25rem 1.125rem;
+}
+
+.moca-progress__label {
+  margin: 0 0 0.75rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--moca-muted);
+  text-align: center;
+}
+
+.moca-progress__track {
+  height: 4px;
+  border-radius: var(--moca-radius-pill);
+  background: rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  max-width: 28rem;
+  margin: 0 auto;
+}
+
+.moca-progress__fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--moca-text);
+  transition: width 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.moca-shell {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 1.25rem 1.25rem 0;
+}
+
+.moca-setup-screen {
+  display: flex;
+  flex: 1 1 0;
+  min-height: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1.25rem;
+  overflow: hidden;
+}
+
+.moca-setup-screen .moca-card {
+  width: 100%;
+  max-width: 28rem;
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+  padding: 1.25rem 1.25rem;
+}
+
+.moca-exam-body {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.moca-card {
+  background: var(--moca-surface);
+  border-radius: var(--moca-radius);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.06);
+  padding: 1.75rem 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .moca-card {
+    padding: 2rem 2rem;
+  }
+}
+
+.moca-badge {
+  margin: 0 0 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--moca-muted);
+}
+
+.moca-title {
+  margin: 0 0 1.25rem;
+  font-size: clamp(1.75rem, 5vw, 2.125rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: var(--moca-text);
+}
+
+.moca-guide {
+  margin-bottom: 1.5rem;
+  padding: 1.25rem 1.25rem;
+  border-radius: 16px;
+  background: var(--moca-fill);
+}
+
+.moca-guide__text {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.55;
+  color: var(--moca-text);
+  white-space: pre-line;
+}
+
+.moca-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: var(--moca-touch);
+  padding: 0.875rem 1.5rem;
+  border: none;
+  border-radius: var(--moca-radius-pill);
+  background: var(--moca-accent);
+  color: #fff;
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.moca-btn-primary:hover:not(:disabled) {
+  background: var(--moca-accent-hover);
+}
+
+.moca-btn-primary:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.moca-btn-primary:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.moca-btn-primary:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.35);
+}
+
+.moca-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  width: 100%;
+  min-height: 48px;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: var(--moca-radius-pill);
+  background: transparent;
+  color: var(--moca-accent);
+  font-size: 1.0625rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.moca-btn-ghost:hover:not(:disabled) {
+  background: rgba(0, 113, 227, 0.08);
+}
+
+.moca-btn-ghost:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.moca-field {
+  width: 100%;
+  min-height: var(--moca-touch);
+  padding: 0.875rem 1.125rem;
+  border: 1px solid var(--moca-separator);
+  border-radius: 14px;
+  background: var(--moca-fill);
+  color: var(--moca-text);
+  font-size: 1.25rem;
+  font-weight: 400;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.moca-field::placeholder {
+  color: #aeaeb2;
+}
+
+.moca-field:focus {
+  outline: none;
+  border-color: var(--moca-accent);
+  box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.2);
+  background: var(--moca-surface);
+}
+
+.moca-label {
+  display: block;
+  margin-bottom: 0.625rem;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--moca-text);
+}
+
+.moca-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 25;
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  background: rgba(245, 245, 247, 0.92);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-top: 1px solid var(--moca-separator);
+}
+
+.moca-exam:has(.moca-nav) {
+  padding-bottom: calc(10.125rem + env(safe-area-inset-bottom, 0px));
+}
+
+.moca-panel {
+  border-radius: 16px;
+  background: var(--moca-fill);
+  border: 1px solid var(--moca-separator);
+}
+
+.moca-score {
+  font-size: clamp(3.5rem, 12vw, 4.5rem);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  color: var(--moca-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.moca-exam .rounded-2xl.border.border-gray-200,
+.moca-exam .rounded-2xl.border-2.border-gray-200 {
+  border-color: var(--moca-separator) !important;
+  border-width: 1px !important;
+  border-radius: 16px !important;
+  box-shadow: none;
+}
+
+.moca-exam button.bg-blue-600,
+.moca-exam button.bg-blue-600:hover {
+  border-radius: var(--moca-radius-pill) !important;
+  background: var(--moca-accent) !important;
+  font-weight: 600 !important;
+  min-height: var(--moca-touch);
+}
+
+.moca-exam button.bg-blue-600:hover {
+  background: var(--moca-accent-hover) !important;
+}
+
+.moca-exam button.bg-red-500,
+.moca-exam button.bg-red-600 {
+  border-radius: var(--moca-radius-pill) !important;
+}
