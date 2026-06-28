@@ -1,21 +1,24 @@
 # VM / server deploy — pull from Docker Hub (no local build).
-# Watchtower auto-updates containers labeled watchtower.enable=true.
+# Proxmox VMs are usually linux/amd64 — build with buildx before push (see below).
 #
-# On the server:
+# On Mac (Apple Silicon) push amd64 images for the server:
+#   docker buildx create --use --name moca-builder 2>/dev/null || docker buildx use moca-builder
+#   docker buildx build --platform linux/amd64 -t duylongcontainer/moca-backend:latest --push ./backend
+#   docker buildx build --platform linux/amd64 -t duylongcontainer/moca-frontend:latest --push ./frontend
+#
+# On the server (amd64):
 #   cp backend/.env.example .env   # edit DB_*, REDIS_*, MINIO_*
 #   docker login -u duylongcontainer
 #   docker compose -f compose.prod.yml pull
 #   docker compose -f compose.prod.yml up -d
-#
-# After you push new :latest tags from your laptop:
-#   Watchtower pulls + restarts backend/frontend (within poll interval).
 
 services:
   backend:
     image: duylongcontainer/moca-backend:latest
+    platform: linux/amd64
     container_name: moca-backend
     restart: unless-stopped
-  
+    env_file: .env
     ports:
       - "8080:8080"
     healthcheck:
@@ -29,6 +32,7 @@ services:
 
   frontend:
     image: duylongcontainer/moca-frontend:latest
+    platform: linux/amd64
     container_name: moca-frontend
     restart: unless-stopped
     depends_on:
@@ -49,6 +53,3 @@ services:
       WATCHTOWER_POLL_INTERVAL: 300
       WATCHTOWER_CLEANUP: "true"
       WATCHTOWER_LABEL_ENABLE: "true"
-      # Private Hub repos only — set in server .env:
-      # REPO_USER: duylongcontainer
-      # REPO_PASS: ${DOCKERHUB_TOKEN}
