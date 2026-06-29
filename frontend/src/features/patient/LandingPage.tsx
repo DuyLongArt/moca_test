@@ -1,15 +1,20 @@
 import {
-  Activity,
   ArrowRight,
   BarChart3,
-  Check,
-  ChevronRight,
+  Brain,
   ClipboardList,
-  FileText,
+  Compass,
+  Focus,
   Home,
-  MapPin,
+  Languages,
+  LayoutGrid,
+  Lightbulb,
+  LineChart,
+  ListOrdered,
   Menu,
-  ShieldCheck,
+  MousePointerClick,
+  RotateCcw,
+  Scan,
   Stethoscope,
   UserRound,
   X,
@@ -25,39 +30,33 @@ import '../../styles/stitch-elderly.css'
 const inputClass =
   'stitch-input w-full h-12 px-5 bg-surface-container-lowest border-2 border-outline rounded-xl text-lg text-on-surface placeholder:text-on-surface-variant'
 
-const features = [
+const steps = [
   {
-    icon: MapPin,
-    title: 'Lâm sàng chuẩn hóa',
-    desc: 'Hiệu chỉnh phù hợp với văn hóa Việt Nam.',
+    icon: MousePointerClick,
+    title: '1. Bắt đầu dễ dàng',
+    desc: 'Nhấn nút bắt đầu và nhập số điện thoại để định danh.',
   },
   {
-    icon: ShieldCheck,
-    title: 'Độ chính xác 98%',
-    desc: 'Độ nhạy cao trong phát hiện MCI sớm.',
+    icon: ListOrdered,
+    title: '2. Làm từng phần',
+    desc: 'Mỗi màn hình một câu hỏi, có hướng dẫn và bộ đếm thời gian.',
   },
   {
-    icon: Activity,
-    title: 'Theo dõi thời gian thực',
-    desc: 'Ghi nhận phản hồi người dùng tức thì.',
-  },
-  {
-    icon: FileText,
-    title: 'Báo cáo chuyên nghiệp',
-    desc: 'Xuất kết quả chuẩn y khoa nhanh chóng.',
+    icon: LineChart,
+    title: '3. Xem kết quả',
+    desc: 'Kết quả được bác sĩ chấm và tư vấn qua hệ thống.',
   },
 ]
 
-const doctorBenefits = [
-  'Tối ưu hóa quy trình lâm sàng',
-  'Hồ sơ điện tử tập trung',
-  'Hỗ trợ tư vấn từ xa hiệu quả',
-]
-
-const patientBenefits = [
-  'Trải nghiệm kiểm tra nhẹ nhàng',
-  'Kết quả và khuyến nghị tức thì',
-  'Bảo mật dữ liệu tuyệt đối',
+const mocaSections = [
+  { icon: LayoutGrid, title: 'Thị giác không gian' },
+  { icon: Scan, title: 'Gọi tên' },
+  { icon: Brain, title: 'Trí nhớ' },
+  { icon: Focus, title: 'Sự chú ý' },
+  { icon: Languages, title: 'Ngôn ngữ' },
+  { icon: Lightbulb, title: 'Trừu tượng' },
+  { icon: RotateCcw, title: 'Gợi nhớ' },
+  { icon: Compass, title: 'Định hướng' },
 ]
 
 const footerLinks = ['About', 'Services', 'Privacy', 'Contact'] as const
@@ -95,6 +94,11 @@ export function LandingPage() {
     } finally {
       setSubmitting(false)
     }
+  }
+
+  const goDoctor = () => {
+    if (user?.role === 'DOCTOR') navigate('/doctor')
+    else navigate('/login')
   }
 
   const goReports = () => {
@@ -137,108 +141,86 @@ export function LandingPage() {
 
       {/* ── SCROLL BODY ── */}
       <main className="app-shell__main overflow-y-auto pb-24">
-        {/* Hero */}
-        <section className="px-[var(--stitch-margin-mobile)] pt-8">
-          <span className="inline-block rounded-full bg-primary/10 px-4 py-1.5 text-xs font-semibold text-primary">
-            Nền tảng sức khỏe não bộ hàng đầu
-          </span>
-          <h1 className="mt-5 text-3xl font-bold leading-tight text-on-surface">
-            Đánh Giá Nhận Thức{' '}
-            <span className="text-primary">MoCA Việt</span>
-          </h1>
-          <p className="mt-4 text-base leading-relaxed text-on-surface-variant">
-            Giải pháp lâm sàng toàn diện giúp phát hiện sớm và theo dõi suy giảm nhận thức nhẹ,
-            được chuẩn hóa cho người Việt.
-          </p>
-          <button
-            type="button"
-            onClick={openPhoneSheet}
-            className="mt-8 flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-primary text-base font-bold uppercase tracking-wide text-on-primary shadow-sm transition active:scale-[0.98]"
-          >
-            Bắt đầu đánh giá
-            <ChevronRight size={20} />
-          </button>
+        {/* Hero card */}
+        <section className="px-[var(--stitch-margin-mobile)] pt-6">
+          <div className="overflow-hidden rounded-2xl border border-outline-variant bg-surface-container-lowest shadow-sm">
+            <div className="bg-primary px-4 py-2 text-center text-sm font-semibold text-on-primary">
+              Đánh giá nhận thức MoCA
+            </div>
+            <div className="p-5">
+              <h1 className="text-2xl font-bold leading-tight text-on-surface">
+                Thang đánh giá nhận thức
+              </h1>
+              <p className="mt-3 text-sm leading-relaxed text-on-surface-variant">
+                MoCA Việt giúp bạn thực hiện bài kiểm tra Montreal Cognitive Assessment (MoCA)
+                tại nhà với giao diện rõ ràng và hướng dẫn chi tiết.
+              </p>
+              <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <button
+                  type="button"
+                  onClick={openPhoneSheet}
+                  className="flex h-12 min-h-12 items-center justify-center rounded-xl bg-primary text-sm font-bold text-on-primary shadow-sm transition active:scale-[0.98]"
+                >
+                  Bắt đầu kiểm tra
+                </button>
+                <button
+                  type="button"
+                  onClick={goDoctor}
+                  className="flex h-12 min-h-12 items-center justify-center rounded-xl border-2 border-primary bg-transparent text-sm font-bold text-primary transition active:scale-[0.98]"
+                >
+                  Bác sĩ
+                </button>
+              </div>
+              <p className="mt-4 text-center text-xs text-on-surface-variant">
+                Bài kiểm tra miễn phí · Kết quả được chuyên gia theo dõi
+              </p>
+            </div>
+          </div>
         </section>
 
-        {/* Features */}
-        <section className="mt-12 px-[var(--stitch-margin-mobile)]">
-          <h2 className="text-xl font-bold text-on-surface">Tính năng &amp; Hiệu quả</h2>
+        {/* How to — 3-column grid */}
+        <section className="mt-10 px-[var(--stitch-margin-mobile)]">
+          <h2 className="text-xl font-bold text-on-surface">Cách thực hiện bài kiểm tra</h2>
           <p className="mt-1 text-sm text-on-surface-variant">
-            Công nghệ tiên phong trong chẩn đoán thần kinh học.
+            Bài kiểm tra gồm 8 phần theo chuẩn quốc tế
           </p>
-          <div className="mt-5 space-y-4">
-            {features.map((feat) => (
+          <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-3">
+            {steps.map((step) => (
               <div
-                key={feat.title}
-                className="rounded-2xl border border-outline-variant bg-surface-container-lowest p-5 shadow-sm"
+                key={step.title}
+                className="rounded-2xl border border-outline-variant bg-surface-container-lowest p-4 shadow-sm"
               >
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                  <feat.icon size={24} />
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <step.icon size={22} />
                 </div>
-                <p className="mt-4 text-center text-base font-bold text-on-surface">{feat.title}</p>
-                <p className="mt-1 text-center text-sm leading-relaxed text-on-surface-variant">
-                  {feat.desc}
-                </p>
+                <p className="mt-3 text-sm font-bold text-on-surface">{step.title}</p>
+                <p className="mt-1 text-sm leading-relaxed text-on-surface-variant">{step.desc}</p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Benefits */}
-        <section className="mt-12 bg-primary/5 px-[var(--stitch-margin-mobile)] py-10">
-          <h2 className="text-xl font-bold text-on-surface">Lợi ích vượt trội</h2>
-
-          <div className="mt-6 rounded-2xl border border-outline-variant/60 bg-surface-container-lowest p-5">
-            <div className="flex items-center gap-2">
-              <Stethoscope size={20} className="text-primary" />
-              <p className="font-bold text-on-surface">Dành cho Bác sĩ</p>
-            </div>
-            <ul className="mt-4 space-y-3">
-              {doctorBenefits.map((item) => (
-                <li key={item} className="flex items-start gap-2 text-sm text-on-surface-variant">
-                  <Check size={18} className="mt-0.5 shrink-0 text-primary" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="mt-4 rounded-2xl border border-outline-variant/60 bg-surface-container-lowest p-5">
-            <div className="flex items-center gap-2">
-              <UserRound size={20} className="text-primary" />
-              <p className="font-bold text-on-surface">Dành cho Bệnh nhân</p>
-            </div>
-            <ul className="mt-4 space-y-3">
-              {patientBenefits.map((item) => (
-                <li key={item} className="flex items-start gap-2 text-sm text-on-surface-variant">
-                  <Check size={18} className="mt-0.5 shrink-0 text-primary" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
-        {/* CTA */}
-        <section className="px-[var(--stitch-margin-mobile)] py-10 text-center">
-          <h2 className="text-xl font-bold text-on-surface">Sẵn sàng chăm sóc sức khỏe não bộ?</h2>
-          <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-on-surface-variant">
-            Tham gia cùng hàng ngàn chuyên gia y tế trong việc số hóa quy trình đánh giá nhận thức.
+        {/* 8 MoCA sections — 2-column grid, icon left */}
+        <section className="mt-10 px-[var(--stitch-margin-mobile)] pb-4">
+          <h2 className="text-xl font-bold text-on-surface">
+            8 vùng chức năng nhận thức được kiểm tra
+          </h2>
+          <p className="mt-1 text-sm text-on-surface-variant">
+            Bài kiểm tra MoCA đánh giá toàn diện các khía cạnh của trí nhớ và nhận thức.
           </p>
-          <button
-            type="button"
-            onClick={openPhoneSheet}
-            className="mt-6 flex h-14 w-full items-center justify-center rounded-2xl bg-primary text-base font-bold text-on-primary shadow-sm transition active:scale-[0.98]"
-          >
-            Đăng ký ngay
-          </button>
-          <button
-            type="button"
-            onClick={openPhoneSheet}
-            className="mt-3 flex h-14 w-full items-center justify-center rounded-2xl border-2 border-primary bg-transparent text-base font-bold text-primary transition active:scale-[0.98]"
-          >
-            Tải ứng dụng
-          </button>
+          <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {mocaSections.map((section) => (
+              <div
+                key={section.title}
+                className="flex items-center gap-3 rounded-xl border border-outline-variant bg-surface-container-lowest px-4 py-3 shadow-sm"
+              >
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <section.icon size={18} />
+                </div>
+                <p className="text-sm font-semibold text-on-surface">{section.title}</p>
+              </div>
+            ))}
+          </div>
         </section>
 
         {/* Footer */}

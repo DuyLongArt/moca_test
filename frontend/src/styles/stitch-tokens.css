@@ -1,20 +1,20 @@
 /**
- * Stitch "Functional Clarity" — full palette from login screen HTML
+ * Stitch "Functional Clarity" — clinical blue (MoCA landing mockup)
  */
 :root {
-  --stitch-primary: #3525cd;
-  --stitch-primary-container: #4f46e5;
+  --stitch-primary: #2563eb;
+  --stitch-primary-container: #3b82f6;
   --stitch-on-primary: #ffffff;
   --stitch-secondary: #00677c;
-  --stitch-background: #f7f9fb;
-  --stitch-surface: #f7f9fb;
+  --stitch-background: #f0f6ff;
+  --stitch-surface: #f0f6ff;
   --stitch-surface-container-lowest: #ffffff;
-  --stitch-surface-container-low: #f2f4f6;
+  --stitch-surface-container-low: #e8f1ff;
   --stitch-on-background: #191c1e;
   --stitch-on-surface: #191c1e;
   --stitch-on-surface-variant: #464555;
-  --stitch-outline: #777587;
-  --stitch-outline-variant: #c7c4d8;
+  --stitch-outline: #64748b;
+  --stitch-outline-variant: #bfdbfe;
   --stitch-font: Geist, system-ui, -apple-system, sans-serif;
   --stitch-margin-mobile: 20px;
 }
@@ -38,7 +38,7 @@
 .stitch-input:focus {
   outline: none;
   border-color: var(--stitch-primary);
-  box-shadow: 0 0 0 4px rgba(53, 37, 205, 0.1);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
 }
 
 .stitch-glass-card {
@@ -48,7 +48,7 @@
 }
 
 .stitch-ambient-shadow {
-  box-shadow: 0 10px 30px -5px rgba(53, 37, 205, 0.15);
+  box-shadow: 0 10px 30px -5px rgba(37, 99, 235, 0.15);
 }
 
 @keyframes stitch-fade-in {
