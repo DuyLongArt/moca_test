@@ -29,7 +29,7 @@ export function AppShell({
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-blue-600">
-              MoCA Platform
+              Moca-Test
             </p>
             <h1 className="text-lg font-bold text-slate-900 md:text-xl">{title}</h1>
           </div>

@@ -243,14 +243,7 @@ export function PatientSettingsPage() {
           </div>
         )}
 
-        <button
-          type="button"
-          onClick={handleLogout}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border border-error/30 py-3 text-sm font-medium text-error"
-        >
-          <LogOut size={18} />
-          Đăng xuất
-        </button>
+    
       </div>
     </MocaPatientLayout>
   )

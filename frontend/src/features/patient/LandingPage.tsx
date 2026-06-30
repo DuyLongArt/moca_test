@@ -114,8 +114,8 @@ export function LandingPage() {
   return (
     <div className="app-shell elderly-layout bg-background text-on-background">
       {/* ── HEADER ── */}
-      <header className="relative z-40 flex h-14 shrink-0 items-center justify-between border-b border-outline-variant bg-surface px-[var(--stitch-margin-mobile)]">
-        <img src="/moca-viet-logo.png" alt="MoCA Việt" className="h-9 w-auto object-contain" />
+      <header className="relative z-40 flex h-24 shrink-0 items-center justify-between border-b border-outline-variant bg-surface px-[var(--stitch-margin-mobile)]">
+        <img src="/moca-viet-logo.png" alt="MoCA Việt" className="h-18 w-auto object-contain" />
         <button
           type="button"
           onClick={() => setMenuOpen((v) => !v)}
@@ -148,7 +148,7 @@ export function LandingPage() {
               Đánh giá nhận thức MoCA
             </div>
             <div className="p-5">
-              <h1 className="text-2xl font-bold leading-tight text-on-surface">
+              <h1 className="text-4xl font-bold leading-tight text-on-surface p-4">
                 Thang đánh giá nhận thức
               </h1>
               <p className="mt-3 text-sm leading-relaxed text-on-surface-variant">
@@ -159,14 +159,14 @@ export function LandingPage() {
                 <button
                   type="button"
                   onClick={openPhoneSheet}
-                  className="flex h-12 min-h-12 items-center justify-center rounded-xl bg-primary text-sm font-bold text-on-primary shadow-sm transition active:scale-[0.98]"
+                  className="flex h-24 min-h-12 items-center justify-center rounded-xl bg-primary text-sm font-bold text-on-primary shadow-sm transition active:scale-[0.98]"
                 >
                   Bắt đầu kiểm tra
                 </button>
                 <button
                   type="button"
                   onClick={goDoctor}
-                  className="flex h-12 min-h-12 items-center justify-center rounded-xl border-2 border-primary bg-transparent text-sm font-bold text-primary transition active:scale-[0.98]"
+                  className="flex h-24 min-h-12 items-center justify-center rounded-xl border-2 border-primary bg-transparent text-sm font-bold text-primary transition active:scale-[0.98]"
                 >
                   Bác sĩ
                 </button>
@@ -208,7 +208,7 @@ export function LandingPage() {
           <p className="mt-1 text-sm text-on-surface-variant">
             Bài kiểm tra MoCA đánh giá toàn diện các khía cạnh của trí nhớ và nhận thức.
           </p>
-          <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-8">
             {mocaSections.map((section) => (
               <div
                 key={section.title}
@@ -225,7 +225,7 @@ export function LandingPage() {
 
         {/* Footer */}
         <footer className="border-t border-outline-variant px-[var(--stitch-margin-mobile)] py-8 text-center">
-          <img src="/moca-viet-logo.png" alt="MoCA Việt" className="mx-auto h-8 w-auto object-contain" />
+   
           <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-on-surface-variant">
             {footerLinks.map((link) => (
               <button
@@ -293,7 +293,7 @@ export function LandingPage() {
             onSubmit={(e) => { e.preventDefault(); handleContinue() }}
             className="relative w-full max-w-lg rounded-t-3xl border border-outline-variant bg-surface-container-lowest p-6 shadow-xl"
           >
-            <div className="mb-4 flex items-center justify-between">
+            <div className="mxb-4 flex items-center justify-between">
               <h3 className="text-xl font-bold text-on-surface">Định danh bệnh nhân</h3>
               <button
                 type="button"

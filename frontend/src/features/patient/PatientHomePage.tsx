@@ -55,32 +55,24 @@ export function PatientHomePage() {
         )}
       </section>
 
-      <div className="mt-4 grid min-h-0 flex-1 auto-rows-fr gap-3 sm:grid-cols-2">
-        {MENU.map((item) => (
-          <button
-            key={item.to}
-            type="button"
-            onClick={() => navigate(item.to)}
-            className="group flex min-h-[5.5rem] flex-col justify-between gap-2 rounded-xl border border-outline-variant bg-surface-container-lowest p-4 text-left transition-all hover:border-primary/40 active:scale-[0.98]"
-          >
-            <div
-              className={`inline-flex h-10 w-10 items-center justify-center rounded-lg ${item.color}`}
-            >
-              <item.icon size={20} />
-            </div>
-            <div className="flex items-end justify-between gap-2">
-              <div>
-                <h3 className="text-base font-semibold text-on-surface">{item.label}</h3>
-                <p className="text-xs text-on-surface-variant">{item.desc}</p>
-              </div>
-              <ChevronRight
-                size={18}
-                className="shrink-0 text-outline transition-transform group-hover:translate-x-0.5"
-              />
-            </div>
-          </button>
-        ))}
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+  {MENU.map((item) => (
+    <button
+      key={item.to}
+      type="button"
+      onClick={() => navigate(item.to)}
+      className="group flex items-start gap-3 rounded-xl border border-outline-variant bg-surface-container-lowest p-4 text-left transition-all hover:border-primary/40 active:scale-[0.98]"
+    >
+      <div className={`flex h-15 w-15 shrink-0 items-center justify-center rounded-lg ${item.color}`}>
+        <item.icon size={20} />
       </div>
+      <div>
+        <h3 className="text-base font-semibold text-on-surface">{item.label}</h3>
+        <p className="mt-0.5 text-xs text-on-surface-variant">{item.desc}</p>
+      </div>
+    </button>
+  ))}
+</div>
     </MocaPatientLayout>
   )
 }
