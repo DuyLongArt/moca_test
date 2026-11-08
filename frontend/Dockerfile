@@ -7,7 +7,7 @@ RUN npm ci
 
 COPY . .
 # Empty = relative /api (nginx proxies to backend)
-ARG VITE_API_URL=
+ARG VITE_API_URL=http://localhost:8080/api/v1
 ARG VITE_USE_MOCK=false
 ENV VITE_API_URL=$VITE_API_URL
 ENV VITE_USE_MOCK=$VITE_USE_MOCK
