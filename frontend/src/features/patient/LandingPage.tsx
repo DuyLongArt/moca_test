@@ -12,6 +12,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../stores/authStore'
 import { adoptDevRole, isDevAuthBypass } from '../../shared/lib/devAuth'
+import { apiErrorStatus } from '../auth/auth.api'
 import { validateVnPhone } from '../../shared/utils/phone'
 import '../../styles/stitch-elderly.css'
 
@@ -29,15 +30,19 @@ const steps = [
 export function LandingPage() {
   const navigate = useNavigate()
   const patientLogin = useAuthStore((s) => s.patientLogin)
+  const patientSignup = useAuthStore((s) => s.patientSignup)
   const user = useAuthStore((s) => s.user)
   const [menuOpen, setMenuOpen] = useState(false)
   const [phoneOpen, setPhoneOpen] = useState(false)
   const [phone, setPhone] = useState('')
+  const [password, setPassword] = useState('')
+  const [fullName, setFullName] = useState('')
+  const [registering, setRegistering] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
   const phoneCheck = validateVnPhone(phone)
-  const phoneReady = phoneCheck.ok
+  const phoneReady = phoneCheck.ok && password.length >= (registering ? 10 : 1) && (!registering || !!fullName.trim())
 
   const openPhoneSheet = () => {
     setPhoneOpen(true)
@@ -52,10 +57,25 @@ export function LandingPage() {
     setError(null)
     setSubmitting(true)
     try {
-      await patientLogin(phoneCheck.normalized)
+      if (registering) {
+        await patientSignup({ phone: phoneCheck.normalized, password, fullName: fullName.trim() })
+      } else {
+        await patientLogin(phoneCheck.normalized, password)
+      }
       navigate('/patient')
-    } catch {
-      setError('Không đăng nhập được. Kiểm tra số điện thoại hoặc thử lại sau.')
+    } catch (err) {
+      const status = apiErrorStatus(err)
+      setError(
+        status === 409
+          ? 'Số điện thoại này đã đăng ký. Vui lòng đăng nhập.'
+          : status === 429
+            ? 'Thử quá nhiều lần. Vui lòng đợi một phút rồi thử lại.'
+            : status === 400 && registering
+              ? 'Thông tin không hợp lệ. Mật khẩu từ 10 đến 72 ký tự.'
+              : registering
+                ? 'Không đăng ký được. Vui lòng thử lại sau.'
+                : 'Số điện thoại hoặc mật khẩu không đúng.',
+      )
     } finally {
       setSubmitting(false)
     }
@@ -207,7 +227,7 @@ export function LandingPage() {
             className="relative w-full max-w-lg rounded-3xl border border-outline-variant bg-surface-container-lowest p-6 shadow-xl"
           >
             <div className="mxb-4 flex items-center justify-between">
-              <h3 className="text-xl font-bold text-on-surface">Định danh bệnh nhân</h3>
+              <h3 className="text-xl font-bold text-on-surface">{registering ? 'Đăng ký bệnh nhân' : 'Đăng nhập bệnh nhân'}</h3>
               <button
                 type="button"
                 onClick={() => setPhoneOpen(false)}
@@ -218,8 +238,24 @@ export function LandingPage() {
               </button>
             </div>
             <p className="text-sm text-on-surface-variant">
-              Nhập số điện thoại để bắt đầu bài đánh giá MoCA.
+              Đăng nhập bằng số điện thoại và mật khẩu để bắt đầu bài đánh giá MoCA.
             </p>
+            {registering && (
+              <div className="mt-4">
+                <label htmlFor="landing-name" className="mb-2 block text-sm font-semibold text-on-surface">
+                  Họ và tên
+                </label>
+                <input
+                  id="landing-name"
+                  className={inputClass}
+                  placeholder="Nguyễn Văn A"
+                  autoComplete="name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                />
+              </div>
+            )}
             <div className="mt-4">
               <label htmlFor="landing-phone" className="mb-2 block text-sm font-semibold text-on-surface">
                 Số điện thoại
@@ -240,6 +276,26 @@ export function LandingPage() {
                 autoFocus
               />
             </div>
+            <div className="mt-4">
+              <label htmlFor="landing-password" className="mb-2 block text-sm font-semibold text-on-surface">
+                Mật khẩu
+              </label>
+              <input
+                id="landing-password"
+                type="password"
+                className={inputClass}
+                placeholder={registering ? 'Tối thiểu 10 ký tự' : '••••••••'}
+                autoComplete={registering ? 'new-password' : 'current-password'}
+                minLength={registering ? 10 : undefined}
+                maxLength={72}
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value)
+                  setError(null)
+                }}
+                required
+              />
+            </div>
             {error && (
               <p className="mt-3 text-sm text-error" role="alert">
                 {error}
@@ -250,8 +306,18 @@ export function LandingPage() {
               disabled={submitting || !phoneReady}
               className="mt-5 flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-primary text-base font-bold text-on-primary disabled:opacity-60"
             >
-              {submitting ? 'Đang đăng nhập…' : 'Bắt đầu đánh giá'}
+              {submitting ? 'Đang xử lý…' : registering ? 'Đăng ký & bắt đầu' : 'Bắt đầu đánh giá'}
               <ArrowRight size={20} />
+            </button>
+            <button
+              type="button"
+              className="mt-3 w-full text-center text-sm font-medium text-primary hover:underline"
+              onClick={() => {
+                setRegistering((v) => !v)
+                setError(null)
+              }}
+            >
+              {registering ? 'Đã có tài khoản? Đăng nhập' : 'Chưa có tài khoản? Đăng ký'}
             </button>
           </form>
         </div>
