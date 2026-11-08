@@ -2,6 +2,7 @@ import { ArrowLeft, ArrowRight, Eye, EyeOff } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { useAuthStore } from '../../stores/authStore'
+import { apiErrorStatus } from './auth.api'
 import { AuthPageShell, authInputClass, authPrimaryBtn } from './AuthPageShell'
 
 export function DoctorSignupPage() {
@@ -11,6 +12,7 @@ export function DoctorSignupPage() {
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [inviteCode, setInviteCode] = useState('')
   const [specialty, setSpecialty] = useState('')
   const [licenseNumber, setLicenseNumber] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -24,8 +26,8 @@ export function DoctorSignupPage() {
   const handleSignup = async (e: FormEvent) => {
     e.preventDefault()
     setError(null)
-    if (password.length < 8) {
-      setError('Mật khẩu tối thiểu 8 ký tự.')
+    if (password.length < 10 || password.length > 72) {
+      setError('Mật khẩu từ 10 đến 72 ký tự.')
       return
     }
     setSubmitting(true)
@@ -34,13 +36,18 @@ export function DoctorSignupPage() {
         email: email.trim(),
         password,
         fullName: fullName.trim(),
+        inviteCode: inviteCode.trim(),
         specialty: specialty.trim() || undefined,
         licenseNumber: licenseNumber.trim() || undefined,
       })
     } catch (err: unknown) {
-      const status = (err as { response?: { status?: number } })?.response?.status
+      const status = apiErrorStatus(err)
       if (status === 409) {
         setError('Email này đã được đăng ký. Vui lòng đăng nhập.')
+      } else if (status === 403) {
+        setError('Mã mời không hợp lệ.')
+      } else if (status === 429) {
+        setError('Thử quá nhiều lần. Vui lòng đợi một phút rồi thử lại.')
       } else {
         setError('Không đăng ký được. Vui lòng thử lại sau.')
       }
@@ -91,12 +98,13 @@ export function DoctorSignupPage() {
               id="signup-password"
               type={showPassword ? 'text' : 'password'}
               className={authInputClass}
-              placeholder="Tối thiểu 8 ký tự"
+              placeholder="Tối thiểu 10 ký tự"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="new-password"
               required
-              minLength={8}
+              minLength={10}
+              maxLength={72}
             />
             <button
               type="button"
@@ -107,6 +115,21 @@ export function DoctorSignupPage() {
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
+        </div>
+
+        <div className="flex flex-col space-y-1">
+          <label className="px-1 text-sm font-medium text-on-surface-variant" htmlFor="invite">
+            Mã mời
+          </label>
+          <input
+            id="invite"
+            className={authInputClass}
+            placeholder="Mã do bệnh viện cung cấp"
+            value={inviteCode}
+            onChange={(e) => setInviteCode(e.target.value)}
+            autoComplete="off"
+            required
+          />
         </div>
 
         <div className="flex flex-col space-y-1">

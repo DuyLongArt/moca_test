@@ -3,7 +3,11 @@ import { persist } from 'zustand/middleware'
 import {
   doctorLogin as doctorLoginApi,
   doctorSignup as doctorSignupApi,
+  logoutApi,
   patientLogin as patientLoginApi,
+  patientSignup as patientSignupApi,
+  refreshTokens,
+  type AuthSession,
 } from '../features/auth/auth.api'
 
 export type UserRole = 'PATIENT' | 'DOCTOR' | 'ADMIN'
@@ -21,42 +25,73 @@ export type AuthUser = {
 
 type AuthState = {
   user: AuthUser | null
+  /** Short-lived (15 min) access JWT. */
   token: string | null
-  /** Patient: phone only → POST /api/v1/auth/patient/login */
-  patientLogin: (phone: string) => Promise<void>
-  /** Clinician / admin: email + password → POST /api/v1/auth/staff/login */
+  /** Rotating 30-day refresh token. */
+  refreshToken: string | null
+  patientLogin: (phone: string, password: string) => Promise<void>
+  patientSignup: (payload: { phone: string; password: string; fullName: string }) => Promise<void>
   doctorLogin: (email: string, password: string) => Promise<void>
-  /** Clinician signup → POST /api/v1/auth/staff/signup */
   doctorSignup: (payload: {
     email: string
     password: string
     fullName: string
+    inviteCode: string
     specialty?: string
     licenseNumber?: string
   }) => Promise<void>
+  /** Returns the new access token, or null (and clears the session) on failure. */
+  refresh: () => Promise<string | null>
   updateUser: (user: AuthUser) => void
+  /** Drops local state without calling the API. */
+  clearSession: () => void
+  /** Revokes the refresh token server-side, then clears local state. */
   logout: () => void
 }
 
+const setSession = (s: AuthSession) => ({
+  user: s.user,
+  token: s.accessToken,
+  refreshToken: s.refreshToken,
+})
+
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
       token: null,
-      patientLogin: async (phone) => {
-        const { user, accessToken } = await patientLoginApi(phone)
-        set({ user, token: accessToken })
+      refreshToken: null,
+      patientLogin: async (phone, password) => {
+        set(setSession(await patientLoginApi(phone, password)))
+      },
+      patientSignup: async (payload) => {
+        set(setSession(await patientSignupApi(payload)))
       },
       doctorLogin: async (email, password) => {
-        const { user, accessToken } = await doctorLoginApi(email, password)
-        set({ user, token: accessToken })
+        set(setSession(await doctorLoginApi(email, password)))
       },
       doctorSignup: async (payload) => {
-        const { user, accessToken } = await doctorSignupApi(payload)
-        set({ user, token: accessToken })
+        set(setSession(await doctorSignupApi(payload)))
+      },
+      refresh: async () => {
+        const current = get().refreshToken
+        if (!current) return null
+        try {
+          const t = await refreshTokens(current)
+          set({ token: t.accessToken, refreshToken: t.refreshToken })
+          return t.accessToken
+        } catch {
+          get().clearSession()
+          return null
+        }
       },
       updateUser: (user) => set({ user }),
-      logout: () => set({ user: null, token: null }),
+      clearSession: () => set({ user: null, token: null, refreshToken: null }),
+      logout: () => {
+        const rt = get().refreshToken
+        get().clearSession()
+        if (rt) void logoutApi(rt).catch(() => {})
+      },
     }),
     { name: 'moca-auth' },
   ),
