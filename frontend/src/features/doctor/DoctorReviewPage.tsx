@@ -310,12 +310,20 @@ export function DoctorReviewPage() {
       </AppShell>
     )
   }
+  
+  const getErrorMessage = (err: any) => {
+    const msg = err?.message ?? ''
+    if (msg.includes('filter is not a function')) {
+      return 'Danh sách bệnh nhân trống'
+    }
+    return msg || 'Không tìm thấy phiên làm bài'
+  }
 
   if (error || !session) {
     return (
       <AppShell title="Chấm điểm bài làm" nav={DOCTOR_NAV}>
         <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
-          Không tải được dữ liệu: {error?.message ?? 'Không tìm thấy phiên làm bài'}
+          Không tải được dữ liệu: {getErrorMessage(error)}
         </div>
       </AppShell>
     )

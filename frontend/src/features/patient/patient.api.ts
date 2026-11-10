@@ -75,13 +75,30 @@ export async function listPatientAppointments(
 }
 
 export async function listDoctorOptions(
-  patientId: string,
 ): Promise<DoctorOption[]> {
   if (USE_MOCK) return MOCK_DOCTORS
-  const { data } = await api.get<DoctorOption[]>(
-    `/api/v1/patient/${patientId}/clinicians`,
-  )
-  return data
+
+  const { data } = await api.get<
+    | DoctorOption[]
+    | { status?: string; code?: number; message?: string; data?: Array<Record<string, unknown>> }
+  >('/api/v1/doctors/list', {
+    // params: { patient_id: patientId },
+  })
+
+  const rows = Array.isArray(data) ? data : data?.data ?? []
+
+  return rows.map((item: any, index: number) => ({
+    id: String(item.id ?? item.doctor_id ?? item.full_name ?? `${item.specialty ?? 'doctor'}-${index}`),
+    name: String(item.full_name ?? item.fullName ?? item.name ?? `Bác sĩ ${index + 1}`),
+    specialty: String(item.specialty ?? item.specialty_name ?? 'Chuyên khoa'),
+    phone: typeof item.phone_number === 'string' || typeof item.phoneNumber === 'string'
+      ? String(item.phone_number ?? item.phoneNumber ?? '')
+      : undefined,
+    email: typeof item.email === 'string' ? item.email : undefined,
+    workplace: typeof item.workplace === 'string' ? item.workplace : undefined,
+    experience: typeof item.experience === 'string' ? item.experience : undefined,
+    isCurrent: Boolean(item.is_current ?? item.isCurrent ?? false),
+  }))
 }
 
 export async function pickClinician(
@@ -89,7 +106,27 @@ export async function pickClinician(
   clinicianId: string,
 ): Promise<void> {
   if (USE_MOCK) return
-  await api.post(`/api/v1/patient/${patientId}/clinicians`, { clinicianId })
+
+  const { data } = await api.post<
+    | string
+    | { status?: string; code?: number; message?: string; data?: Record<string, unknown> }
+  >('/api/v1/doctor/list', null, {
+    params: {
+      patient_id: patientId,
+      doctor_id: clinicianId,
+    },
+  })
+
+  const ok =
+    typeof data === 'string'
+      ? data.toLowerCase().includes('success')
+      : String(data?.status ?? '').toLowerCase() === 'ok' ||
+        Number(data?.code ?? 0) === 200 ||
+        String(data?.message ?? '').toLowerCase().includes('success')
+
+  if (!ok) {
+    throw new Error('Không thể gán bác sĩ cho bệnh nhân.')
+  }
 }
 
 export type UpdatePatientProfilePayload = {

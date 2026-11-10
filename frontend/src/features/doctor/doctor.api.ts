@@ -3,6 +3,18 @@ import { useMockApi } from '../../shared/lib/useMockApi'
 
 const USE_MOCK = useMockApi()
 
+type DoctorListItemDto = {
+  id: string | number
+  full_name?: string
+  fullName?: string
+  phone_number?: string | number
+  phoneNumber?: string | number
+  score?: number | null
+  status?: string | null
+  created_at?: string
+  createdAt?: string
+}
+
 export type ReviewQueueItem = {
   id: string
   patientName: string
@@ -112,20 +124,58 @@ export async function listDoctorReviews(
   doctorId: string,
 ): Promise<ReviewQueueItem[]> {
   if (USE_MOCK) return MOCK_REVIEWS
-  const { data } = await api.get<ReviewQueueItem[]>(
-    `/api/v1/clinician/${doctorId}/reviews`,
-  )
+  const { data } = await api.get<DoctorListItemDto[]>('/api/v1/doctor/list', {
+    params: { id: doctorId },
+  })
+
   return data
+    .filter((item) => {
+      const status = (item.status ?? '').toLowerCase()
+      return status.includes('waiting') || status.includes('chờ')
+    })
+    .map((item) => ({
+      id: String(item.id),
+      patientName: item.full_name ?? item.fullName ?? `Patient ${item.id}`,
+      submittedAt: item.created_at ?? item.createdAt ?? new Date().toISOString(),
+      provisionalScore: item.score ?? 0,
+      setId: 'MOCA_SET_1',
+    }))
 }
 
 export async function listDoctorPatients(
   doctorId: string,
 ): Promise<DoctorPatient[]> {
   if (USE_MOCK) return MOCK_PATIENTS
-  const { data } = await api.get<DoctorPatient[]>(
-    `/api/v1/clinician/${doctorId}/patients`,
+  const { data } = await api.get<DoctorListItemDto[]>('/api/v1/doctor/list', {
+    params: { id: doctorId },
+  })
+
+  return data.map((item) => ({
+    id: String(item.id),
+    name: item.full_name ?? item.fullName ?? `Patient ${item.id}`,
+    phone: String(item.phone_number ?? item.phoneNumber ?? ''),
+    lastTestAt: item.created_at ?? item.createdAt ?? new Date().toISOString(),
+    lastScoreLabel: item.score === null || item.score === undefined ? 'Chua co' : String(item.score),
+    sessions: [],
+  }))
+}
+
+export async function assignPatientDoctor(
+  patientId: string | number,
+  doctorId: string | number,
+): Promise<boolean> {
+  if (USE_MOCK) return true
+  const { data } = await api.get<string | { success?: boolean; status?: string }>(
+    '/api/v1/doctor/list',
+    {
+      params: { patient_id: patientId, doctor_id: doctorId },
+    },
   )
-  return data
+
+  if (typeof data === 'string') {
+    return data.toLowerCase().includes('success')
+  }
+  return !!(data.success || String(data.status ?? '').toLowerCase() === 'success')
 }
 
 const MOCK_SESSION_DETAIL: Record<string, SessionDetail> = {

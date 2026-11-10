@@ -33,12 +33,10 @@ export function usePatientAppointments() {
 }
 
 export function useDoctorOptions() {
-  const patientId = useAuthStore((s) => s.user?.id)
 
   return useQuery({
-    queryKey: queryKeys.patient.clinicians(patientId ?? ''),
-    queryFn: () => listDoctorOptions(patientId!),
-    enabled: !!patientId,
+    queryKey: ['doctorOptions'],
+    queryFn: () => listDoctorOptions(), // No argument passed
   })
 }
 

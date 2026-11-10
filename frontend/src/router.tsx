@@ -29,7 +29,7 @@ export function AppRouter() {
           <Route path="/patient/test" element={<PatientTestPage />} />
           <Route path="/patient/results" element={<PatientResultsPage />} />
           <Route path="/patient/appointments" element={<PatientAppointmentsPage />} />
-          <Route path="/patient/clinicians" element={<PatientDoctorsPage />} />
+          <Route path="/patient/pickup" element={<PatientDoctorsPage />} />
           <Route path="/patient/settings" element={<PatientSettingsPage />} />
         </Route>
 

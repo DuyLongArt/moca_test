@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { ATTENTION, QUESTION_BANK, pickRandomSetId } from "../../data/mocaQuestionBank";
 import { useAuthStore } from "../../stores/authStore";
-import { useSubmitSession } from "./usePatientQueries";
+import { useDoctorOptions, usePickClinician, useSubmitSession } from "./usePatientQueries";
 import "./mocaExam.css";
 import {
   hasRecording,
@@ -1935,6 +1935,102 @@ function StartScreen({ profile, setProfile, onStart, onHome }) {
   );
 }
 
+function PickUpDoctor({
+  doctors = [],
+  selectedDoctorId,
+  onSelectDoctor,
+  onHome,
+  onStart,
+  loading = false,
+  error = null,
+}) {
+  return (
+    <div className="moca-setup-screen">
+      <div className="moca-card">
+        <button
+          type="button"
+          onClick={onHome}
+          className="mb-4 flex items-center gap-1 text-sm font-medium text-[var(--moca-primary)] hover:underline"
+        >
+          <ArrowLeft size={16} />
+          Trang chủ
+        </button>
+
+        <div className="mb-5">
+          <label className="moca-label">Chọn bác sĩ sẽ chấm điểm cho bạn</label>
+
+          {loading && (
+            <div className="mt-3 rounded-xl border border-[var(--moca-separator)] bg-[var(--moca-fill)] px-4 py-3 text-sm text-[var(--moca-muted)]">
+              Đang tải danh sách bác sĩ...
+            </div>
+          )}
+
+          {!loading && error && (
+            <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              Không thể tải danh sách bác sĩ. Vui lòng thử lại.
+            </div>
+          )}
+
+          {!loading && !error && (
+            <div className="space-y-3 pt-3">
+              {doctors.map((doctor) => {
+                const selected = doctor.id === selectedDoctorId
+
+                return (
+                  <button
+                    key={doctor.id}
+                    type="button"
+                    onClick={() => onSelectDoctor(doctor.id)}
+                    className={[
+                      "w-full rounded-xl border p-4 text-left transition-all",
+                      selected
+                        ? "border-[var(--moca-accent)] bg-[rgba(0,113,227,0.06)] shadow-sm"
+                        : "border-[var(--moca-separator)] bg-[var(--moca-fill)] hover:border-[var(--moca-accent)]/50",
+                    ].join(" ")}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <div className="font-semibold text-[var(--moca-text)]">
+                          {doctor.name}
+                        </div>
+                        <div className="mt-1 text-sm text-[var(--moca-muted)]">
+                          {doctor.specialty}
+                        </div>
+                      </div>
+
+                      <div
+                        className={[
+                          "mt-1 flex h-5 w-5 items-center justify-center rounded-full border",
+                          selected
+                            ? "border-[var(--moca-accent)] bg-[var(--moca-accent)] text-white"
+                            : "border-[var(--moca-separator)] bg-white",
+                        ].join(" ")}
+                      >
+                        {selected && <span className="text-[10px]">✓</span>}
+                      </div>
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+          )}
+        </div>
+
+        <div className="mt-6 flex flex-col gap-2">
+          <button
+            type="button"
+            onClick={onStart}
+            className="moca-btn-primary"
+            disabled={!selectedDoctorId || loading}
+          >
+            Tiếp tục
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 /* =============================================================================
    CONTAINER — wizard + progress + state management
    ========================================================================== */
@@ -1942,9 +2038,12 @@ export default function MocaTestContainer() {
   const navigate = useNavigate();
   const speech = useSpeech("vi-VN");
   const authUser = useAuthStore((s) => s.user);
+  const { data: doctors = [], isLoading: doctorsLoading, error: doctorsError } = useDoctorOptions();
+  const assignDoctor = usePickClinician();
   const submitSession = useSubmitSession();
   const submitStarted = useRef(false);
   const [submitStatus, setSubmitStatus] = useState("idle");
+  const [selectedDoctorId, setSelectedDoctorId] = useState(null);
 
   const [profile, setProfile] = useState({
     phone: authUser?.id ?? "",
@@ -1953,7 +2052,7 @@ export default function MocaTestContainer() {
     education_years: 11,
     selected_set_id: Object.keys(QUESTION_BANK)[0],
   });
-  const [phase, setPhase] = useState("start");
+  const [phase, setPhase] = useState("pickup"); // pickup | start | exam | results
   const [currentStep, setCurrentStep] = useState(1); // 1..9
   const [answers, setAnswers] = useState({});
   const [section3EndTime, setSection3EndTime] = useState(null);
@@ -2031,6 +2130,27 @@ export default function MocaTestContainer() {
 
   return (
     <div className="moca-exam">
+      {phase === "pickup" && (
+        <PickUpDoctor
+          doctors={doctors}
+          selectedDoctorId={selectedDoctorId}
+          onSelectDoctor={setSelectedDoctorId}
+          onHome={() => navigate('/patient')}
+          loading={doctorsLoading}
+          error={doctorsError}
+          onStart={() => {
+            if (!selectedDoctorId) return;
+            assignDoctor.mutate(selectedDoctorId, {
+              onSuccess: () => {
+                setPhase("start");
+              },
+              onError: () => {
+                // keep the user on the pickup screen and let them retry
+              },
+            });
+          }}
+        />
+      )}
       {phase === "exam" && <ProgressBar value={progress} currentStep={currentStep} />}
 
       {phase === "start" && (
